@@ -228,12 +228,7 @@ public class Items
             rarity = scrapItem.levelRarities[Levels.LevelTypes.All];
         }
 
-        var spawnableÍtemWithRarity = new SpawnableItemWithRarity()
-        {
-            spawnableItem = scrapItem.item,
-            rarity = rarity
-        };
-
+        var spawnableÍtemWithRarity = new SpawnableItemWithRarity(scrapItem.item, rarity);
         // make sure spawnableScrap does not already contain item
         //Plugin.logger.LogInfo($"Checking if {scrapItem.item.name} is already in {name}");
 
@@ -422,19 +417,11 @@ public class Items
 
             //Plugin.logger.LogInfo($"Item price: {buyNode1.itemCost}, Item index: {buyNode1.buyItemIndex}");
 
-            buyNode1.terminalOptions = new CompatibleNoun[2]
-            {
-                new CompatibleNoun()
-                {
-                    noun = self.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "confirm"),
-                    result = buyNode2
-                },
-                new CompatibleNoun()
-                {
-                    noun = self.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "deny"),
-                    result = cancelPurchaseNode
-                }
-            };
+            buyNode1.terminalOptions =
+            [
+                new CompatibleNoun(self.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "confirm"), buyNode2),
+                new CompatibleNoun(self.terminalNodes.allKeywords.First(keyword2 => keyword2.word == "deny"), cancelPurchaseNode)
+            ];
 
             var keyword = TerminalUtils.CreateTerminalKeyword(itemName.ToLowerInvariant().Replace(" ", "-"), defaultVerb: buyKeyword);
 
@@ -446,11 +433,7 @@ public class Items
             self.terminalNodes.allKeywords = allKeywords.ToArray();
 
             var nouns = buyKeyword.compatibleNouns.ToList();
-            nouns.Add(new CompatibleNoun()
-            {
-                noun = keyword,
-                result = buyNode1
-            });
+            nouns.Add(new CompatibleNoun(keyword, buyNode1));
             buyKeyword.compatibleNouns = nouns.ToArray();
 
 
@@ -469,11 +452,7 @@ public class Items
             self.terminalNodes.allKeywords = allKeywords.ToArray();
 
             var itemInfoNouns = infoKeyword.compatibleNouns.ToList();
-            itemInfoNouns.Add(new CompatibleNoun()
-            {
-                noun = keyword,
-                result = itemInfo
-            });
+            itemInfoNouns.Add(new CompatibleNoun(keyword, itemInfo));
             infoKeyword.compatibleNouns = itemInfoNouns.ToArray();
 
             BuyableItemAssetInfo buyableItemAssetInfo = new BuyableItemAssetInfo()
